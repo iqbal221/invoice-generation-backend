@@ -1,0 +1,71 @@
+# service: server
+
+# provider:
+#   name: aws
+#   runtime: nodejs14.x
+#   memorySize: 128
+#   timeout: 10
+#   region: us-east-1
+
+# functions:
+#   app:
+#     handler: index.handler
+#     events:
+#       - http:
+#           path: /
+#           method: get
+#       - http:
+#           path: /api/{proxy+}
+#           method: post
+#       - http:
+#           path: /api2/{proxy+}
+#           method: put
+#       - http:
+#           path: /api2/{proxy+}
+#           method: Delete
+
+# Use serverless-dotenv-plugin to load environment variables from .env file
+# Use serverless-bundle to optimize the bundle size of the Lambda function
+# Use serverless-prune-plugin to remove unnecessary files and packages from the final deployment package
+# Use serverless-domain-manager to manage custom domain and SSL certificate
+# Use serverless-webpack to build the Lambda function using webpack
+# Use serverless-step-functions to create state machines and state machine executions
+# Use serverless-appsync-plugin to create AWS AppSync API and data sources
+# Use serverless-s3-deploy to deploy the static files to S3 bucket
+# Use serverless-s3-remover to remove the static files from S3 bucket
+
+# Define environment variables for the Lambda function
+# environment:
+#   NODE_ENV: ${opt:stage, 'dev'}
+#   APP_URL: ${self:custom.domain.${self:provider.stage}}
+
+# Define custom domains for the API Gateway
+# custom:
+#   domain:
+#     dev: example-api-gateway-dev.domain.com
+#     prod: example-api-gateway-prod.domain.com
+
+
+service: server
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  memorySize: 128
+  timeout: 10
+  region: ap-south-1
+
+functions:
+  app:
+    handler: index.handler
+    events: # events trigger lambda functions
+      - http: # this is an API Gateway HTTP event trigger
+          path: /
+          method: ANY
+          cors: true
+      - http: # all routes get proxied to the Express router
+          path: /{proxy+}
+          method: ANY
+          cors: true
+    
+        
